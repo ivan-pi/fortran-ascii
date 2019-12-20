@@ -19,6 +19,9 @@ module stdlib_ascii
     public :: to_lower
     public :: to_upper
 
+    integer, parameter :: ascii = selected_char_kind('ASCII')
+    integer, parameter :: cd = selected_char_kind('DEFAULT')
+
     character(len=*), public, parameter :: fullhex_digits = "0123456789ABCDEFabcdef" !! 0 .. 9A .. Fa .. f
     character(len=*), public, parameter :: hex_digits = fullhex_digits(1:16) !! 0 .. 9A .. F
     character(len=*), public, parameter :: lowerhex_digits = "0123456789abcdef" !! 0 .. 9a .. f
@@ -63,7 +66,6 @@ module stdlib_ascii
     character(len=1), public, parameter :: US  = achar(z'1F') !! Unit separator
     character(len=1), public, parameter :: DEL = achar(z'7F') !! Delete
 
-    ! character(len=*), public, parameter :: whitespace = " \t\v\r\n\f" !! ASCII _whitespace
     character(len=*), public, parameter :: whitespace = " "//TAB//VT//CR//LF//FF !! ASCII _whitespace
 
 contains
@@ -77,7 +79,7 @@ contains
     !> Whether `c` is a letter or a number (0 .. 9, a .. z, A .. Z).
     elemental logical function is_alphanum(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_alphanum = c <= 'z' .and. c >= '0' .and. (c <= '9' .or. c >= 'a' .or. (c >= 'A' .and. c <= 'Z'))
+        is_alphanum = (c >= '0' .and. c <= '9') .or. (c >= 'a' .and. c <= 'z') .or. (c >= 'A' .and. c <= 'Z')
     end function
 
     !> Whether or not `c` is in the ASCII character set - i.e. in the
@@ -98,19 +100,19 @@ contains
     !> Whether `c` is a digit (0 .. 9).
     elemental logical function is_digit(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_digit = '0' <= c .and. c <= '9'
+        is_digit = ('0' <= c) .and. (c <= '9')
     end function
 
     !> Whether `c` is a digit in base 8 (0 .. 7).
     elemental logical function is_octal_digit(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_octal_digit = c >= '0' .and. c <= '7';
+        is_octal_digit = (c >= '0') .and. (c <= '7');
     end function
 
     !> Whether `c` is a digit in base 16 (0 .. 9, A .. F, a .. f).
     elemental logical function is_hex_digit(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_hex_digit = c <= 'f' .and. c >= '0' .and. (c <= '9' .or. c >= 'a' .or. (c >= 'A' .and. c <= 'F'))
+        is_hex_digit = (c >= '0' .and. c <= '9') .or. (c >= 'a' .and. c <= 'f') .or. (c >= 'A' .and. c <= 'F')
     end function
 
     !> Whether or not `c` is a punctuation character. That includes
@@ -118,33 +120,39 @@ contains
     !  whitespace.
     elemental logical function is_punctuation(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_punctuation = c <= '~' .and. c >= '!' .and. (.not. is_alphanum(c))
+        integer :: ic
+        ic = iachar(c) !       '~'                 '!'
+        is_punctuation = (ic <= z'7E') .and. (ic >= z'21') .and. (.not. is_alphanum(c))
     end function
 
     !> Whether or not `c` is a printable character other than the
     !  space character.
     elemental logical function is_graphical(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_graphical = '!' <= c .and. c <= '~'
+        integer :: ic
+        ic = iachar(c)
+        is_graphical = (z'21' <= ic) .and. (ic <= z'7E')
     end function
 
     !> Whether or not `c` is a printable character - including the
     !  space character.
     elemental logical function is_printable(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_printable = c >= ' ' .and. c <= '~'
+        integer :: ic
+        ic = iachar(c)
+        is_printable = c >= ' ' .and. ic <= iachar('~')
     end function
 
     !> Whether `c` is a lowercase ASCII letter (a .. z).
     elemental logical function is_lower(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_lower = c >= 'a' .and. c <= 'z'
+        is_lower = (c >= 'a') .and. (c <= 'z')
     end function
 
     !> Whether `c` is an uppercase ASCII letter (A .. Z).
     elemental logical function is_upper(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_upper = c <= 'Z' .and. 'A' <= c
+        is_upper = (c <= 'Z') .and. ('A' <= c)
     end function
 
     !> Whether or not `c` is a whitespace character. That includes the
@@ -153,8 +161,8 @@ contains
     elemental logical function is_white(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
-        ic = iachar(c)
-        is_white = c == ' ' .or. (ic >= z'09' .and. ic <= z'0D');
+        ic = iachar(c)             ! TAB, LF, VT, FF, CR
+        is_white = (c == ' ') .or. (ic >= z'09' .and. ic <= z'0D');
     end function
 
     !> Returns the corresponding lowercase letter, if `c` is an uppercase
@@ -166,7 +174,7 @@ contains
         diff = iachar('A')-iachar('a')
         t = c
         ! if uppercase, make lowercase
-        if (is_upper(t)) t = char(iachar(t) - diff)
+        if (is_upper(t)) t = achar(iachar(t) - diff)
     end function
 
     !> Returns the corresponding uppercase letter, if `c` is a lowercase
@@ -178,7 +186,7 @@ contains
         diff = iachar('A')-iachar('a')
         t = c
         ! if lowercase, make uppercase
-        if (is_lower(t)) t = char(iachar(t) + diff)
+        if (is_lower(t)) t = achar(iachar(t) + diff)
     end function
 
 end module
@@ -549,32 +557,32 @@ program ascii
     print *, "Hex digits ", hex_digits
     print *, "Lower hex digits ", lowerhex_digits
 
-    ! call test_is_alphanum_1
-    ! call test_is_alphanum_2
-    ! call test_is_alpha_1
-    ! call test_is_alpha_2
-    ! call test_is_lower_1
-    ! call test_is_lower_2
-    ! call test_is_upper_1
-    ! call test_is_upper_2
+    call test_is_alphanum_1
+    call test_is_alphanum_2
+    call test_is_alpha_1
+    call test_is_alpha_2
+    call test_is_lower_1
+    call test_is_lower_2
+    call test_is_upper_1
+    call test_is_upper_2
     call test_is_digit_1
-    ! call test_is_digit_2
-    ! call test_is_octal_digit_1
-    ! call test_is_octal_digit_2
-    ! call test_is_hex_digit_1
-    ! call test_is_hex_digit_2
-    ! call test_is_white_1
-    ! call test_is_white_2
-    ! call test_is_control_1
-    ! call test_is_control_2
-    ! call test_is_punctuation_1
-    ! call test_is_punctuation_2
+    call test_is_digit_2
+    call test_is_octal_digit_1
+    call test_is_octal_digit_2
+    call test_is_hex_digit_1
+    call test_is_hex_digit_2
+    call test_is_white_1
+    call test_is_white_2
+    call test_is_control_1
+    call test_is_control_2
+    call test_is_punctuation_1
+    call test_is_punctuation_2
     call test_is_graphical_1
     call test_is_graphical_2
     call test_is_printable_1
     call test_is_printable_2
-    ! call test_is_ascii_1
-    ! call test_is_ascii_2
-    ! call test_to_lower
-    ! call test_to_upper
+    call test_is_ascii_1
+    call test_is_ascii_2
+    call test_to_lower
+    call test_to_upper
 end program
