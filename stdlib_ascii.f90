@@ -130,7 +130,7 @@ contains
     elemental logical function is_graphical(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
-        ic = iachar(c)
+        ic = iachar(c) !  '!'                     '~'
         is_graphical = (z'21' <= ic) .and. (ic <= z'7E')
     end function
 
@@ -140,7 +140,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)
-        is_printable = c >= ' ' .and. ic <= iachar('~')
+        is_printable = c >= ' ' .and. ic <= z'7E'
     end function
 
     !> Whether `c` is a lowercase ASCII letter (a .. z).
