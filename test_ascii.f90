@@ -42,6 +42,8 @@ program test_ascii
     call test_to_upper_1
     call test_to_upper_2
 
+    call test_ascii_table
+
 contains
 
     subroutine test_is_alphanum_1
@@ -416,5 +418,63 @@ contains
                 print *, to_upper(c) /= c
             end if
         end do
+    end subroutine
+
+    !>
+    !   This test reproduces the true/false table found at
+    !   https://en.cppreference.com/w/cpp/string/byte
+    subroutine test_ascii_table
+        integer :: i, j
+        character(len=1) :: c
+        logical :: table(15,12)
+
+        abstract interface
+            pure logical function validation_interface(c)
+                character(len=1), intent(in) :: c
+            end function
+        end interface
+
+        type :: arrprocpointer
+            procedure(validation_interface), pointer, nopass :: pcf
+        end type arrprocpointer
+
+        type(arrprocpointer) :: pcfs(12)
+
+        pcfs(1)%pcf => is_control
+        pcfs(2)%pcf => is_printable
+        pcfs(3)%pcf => is_white
+        pcfs(4)%pcf => is_blank
+        pcfs(5)%pcf => is_graphical
+        pcfs(6)%pcf => is_punctuation
+        pcfs(7)%pcf => is_alphanum
+        pcfs(8)%pcf => is_alpha
+        pcfs(9)%pcf => is_upper
+        pcfs(10)%pcf => is_lower
+        pcfs(11)%pcf => is_digit
+        pcfs(12)%pcf => is_hex_digit
+
+        do i = 1, 12
+            table(1,i) = all([(pcfs(i)%pcf(achar(j)),j=0,8)])
+            table(2,i) = pcfs(i)%pcf(achar(9))
+            table(3,i) = all([(pcfs(i)%pcf(achar(j)),j=10,13)])
+            table(4,i) = all([(pcfs(i)%pcf(achar(j)),j=14,31)])
+            table(5,i) = pcfs(i)%pcf(achar(32))
+            table(6,i) = all([(pcfs(i)%pcf(achar(j)),j=33,47)])
+            table(7,i) = all([(pcfs(i)%pcf(achar(j)),j=48,57)])
+            table(8,i) = all([(pcfs(i)%pcf(achar(j)),j=58,64)])
+            table(9,i) = all([(pcfs(i)%pcf(achar(j)),j=65,70)])
+            table(10,i) = all([(pcfs(i)%pcf(achar(j)),j=71,90)])
+            table(11,i) = all([(pcfs(i)%pcf(achar(j)),j=91,96)])
+            table(12,i) = all([(pcfs(i)%pcf(achar(j)),j=97,102)])
+            table(13,i) = all([(pcfs(i)%pcf(achar(j)),j=103,122)])
+            table(14,i) = all([(pcfs(i)%pcf(achar(j)),j=123,126)])
+            table(15,i) = pcfs(i)%pcf(achar(127))
+        end do
+
+        write(*,'(5X,12(I4))') (i,i=1,12)
+        do j = 1, 15
+            write(*,'(I3,2X,12(L4),2X,I3)') j, (table(j,i),i=1,12), count(table(j,:))
+        end do
+        write(*,'(5X,12(I4))') (count(table(:,i)),i=1,12)
     end subroutine
 end program
