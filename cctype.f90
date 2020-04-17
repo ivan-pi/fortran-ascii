@@ -1,6 +1,6 @@
 module cctype
 
-  use iso_c_binding
+  use iso_c_binding, only: c_int
   implicit none
   public
 

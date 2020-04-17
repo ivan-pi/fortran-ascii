@@ -123,7 +123,6 @@ contains
   pure module function to_upper(c) result(t)
     character(len=1), intent(in) :: c !! A character.
     character(len=1) :: t
-    integer :: diff
     t = c
     if (is_lower(t)) t = achar(iachar(t) + diff_case)
   end function

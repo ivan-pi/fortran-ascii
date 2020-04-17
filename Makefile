@@ -2,15 +2,32 @@
 # FFLAGS = -Wall -Wextra -pedantic -Wimplicit-interface -fPIC -g -fcheck=all
 
 
-FC = ifort
-FFLAGS = -warn all -traceback -std08
+# FC = ifort
+# FFLAGS = -warn all -traceback -std08
+# FFLAGS = -warn all -O3
+
+EXECS = test_ascii generate_ascii_table benchmark_f90 benchmark_cpp generate_characters
 
 #-------------------------------------------------------------
 # This section contains default rule for creating Fortran
 # object files.
 #-------------------------------------------------------------
+.PHONY.: all
+all: $(EXECS)
 
-test_ascii: test_ascii.o fortran_ascii.o fortran_ascii_selectcase.o
+test_ascii: test_ascii.o fortran_ascii.o $(SM)
+	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
+
+generate_ascii_table: generate_ascii_table.o fortran_ascii.o fortran_ascii_pure.o
+	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
+
+benchmark_f90: benchmark.o fortran_ascii.o $(SM)
+	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
+
+benchmark_cpp: benchmark_cpp.cpp
+	g++ -Wall -O3 -o $@ $^
+
+generate_characters: generate_characters.o
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
 
 %.o: %.f
@@ -25,6 +42,8 @@ fortran_ascii_pure.o: fortran_ascii.o
 fortran_ascii_selectcase.o: fortran_ascii.o
 
 test_ascii.o: fortran_ascii.o
+generate_ascii_table.o: fortran_ascii.o
+benchmark.o: fortran_ascii.o
 
 #----------------------------------------------
 # This section shows how to clean up afterward.
@@ -32,7 +51,7 @@ test_ascii.o: fortran_ascii.o
 
 .PHONY : clean cleanobj cleanmod
 clean : cleanobj cleanmod
-	rm -f $(PROGRAMS)
+	rm -f $(EXECS)
 cleanobj :
 	rm -f *.o
 cleanmod :
