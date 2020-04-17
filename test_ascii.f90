@@ -1,255 +1,318 @@
 program test_ascii
 
-    ! use stdlib_error, only: assert
-    use stdlib_ascii
+    use fortran_ascii, only: lowercase, uppercase, digits, &
+        octal_digits, fullhex_digits, hex_digits, lowerhex_digits, &
+        whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
+        is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &
+        is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
+        to_lower, to_upper, LF => ascii_lf, TAB => ascii_tab, NUL => ascii_nul, DEL => ascii_del
 
-    print *, "Lowercase ", lowercase
-    print *, "Uppercase ", uppercase
-    print *, "Digits ", digits
-    print *, "Octal digits ", octal_digits
-    print *, "Full hex digits ", fullhex_digits
-    print *, "Hex digits ", hex_digits
-    print *, "Lower hex digits ", lowerhex_digits
+    implicit none
 
-    call test_is_alphanum_1
-    call test_is_alphanum_2
-    call test_is_alpha_1
-    call test_is_alpha_2
-    call test_is_lower_1
-    call test_is_lower_2
-    call test_is_upper_1
-    call test_is_upper_2
-    call test_is_digit_1
-    call test_is_digit_2
-    call test_is_octal_digit_1
-    call test_is_octal_digit_2
-    call test_is_hex_digit_1
-    call test_is_hex_digit_2
-    call test_is_white_1
-    call test_is_white_2
-    call test_is_control_1
-    call test_is_control_2
-    call test_is_punctuation_1
-    call test_is_punctuation_2
-    call test_is_graphical_1
-    call test_is_graphical_2
-    call test_is_printable_1
-    call test_is_printable_2
-    call test_is_ascii_1
-    call test_is_ascii_2
-    call test_to_lower_1
-    call test_to_lower_2
-    call test_to_upper_1
-    call test_to_upper_2
+    print *, "Lowercase letters: ", lowercase
+    print *, "Uppercase letters: ", uppercase
+    print *, "Digits: ", digits
+    print *, "Octal digits: ", octal_digits
+    print *, "Full hex digits: ", fullhex_digits
+    print *, "Hex digits: ", hex_digits
+    print *, "Lower hex digits: ", lowerhex_digits
+
+    call test_is_alphanum_short
+    call test_is_alphanum_long
+
+    call test_is_alpha_short
+    call test_is_alpha_long
+
+    call test_is_lower_short
+    call test_is_lower_long
+
+    call test_is_upper_short
+    call test_is_upper_long
+
+    call test_is_digit_short
+    call test_is_digit_long
+
+    call test_is_octal_digit_short
+    call test_is_octal_digit_long
+
+    call test_is_hex_digit_short
+    call test_is_hex_digit_long
+
+    call test_is_white_short
+    call test_is_white_long
+
+    call test_is_blank_short
+    call test_is_blank_long
+
+    call test_is_control_short
+    call test_is_control_long
+
+    call test_is_punctuation_short
+    call test_is_punctuation_long
+
+    call test_is_graphical_short
+    call test_is_graphical_long
+
+    call test_is_printable_short
+    call test_is_printable_long
+
+    call test_is_ascii_short
+    call test_is_ascii_long
+
+    call test_to_lower_short
+    call test_to_lower_long
+
+    call test_to_upper_short
+    call test_to_upper_long
 
     call test_ascii_table
 
 contains
 
-    subroutine test_is_alphanum_1
-        print *, "test_is_alphanum_1"
-        print *, is_alphanum('A')
-        print *, is_alphanum('1')
-        print *, .not. is_alphanum('#')
+    subroutine check(condition)
+        logical, intent(in) :: condition
+
+        if (.not. condition) then
+            error stop 'Check failed.'
+        end if
+
+    end subroutine check
+
+    subroutine test_is_alphanum_short
+        print *, "test_is_alphanum_short"
+        call check(is_alphanum('A'))
+        call check(is_alphanum('1'))
+        call check(.not. is_alphanum('#'))
 
         ! N.B.: does not return true for non-ASCII Unicode alphanumerics
-        print *, .not. is_alphanum('á')
+        ! call check(.not. is_alphanum('á'))
     end subroutine
 
-    subroutine test_is_alphanum_2
+    subroutine test_is_alphanum_long
         integer :: i
         character(len=:), allocatable :: clist
-        print *, "test_is_alphanum_2"
+
+        print *, "test_is_alphanum_long"
+
         clist = digits//octal_digits//fullhex_digits//letters//lowercase//uppercase
         do i = 1, len(clist)
-            print *, is_alphanum(clist(i:i))
+            call check(is_alphanum(clist(i:i)))
         end do
 
         clist = whitespace
         do i = 1, len(clist)
-            print *, .not. is_alphanum(clist(i:i))
+            call check(.not. is_alphanum(clist(i:i)))
         end do
     end subroutine
 
-    subroutine test_is_alpha_1
-        print *, "test_is_alpha_1"
-        print *, is_alpha('A')
-        print *, .not. is_alpha('1')
-        print *, .not. is_alpha('#')
+    subroutine test_is_alpha_short
+        print *, "test_is_alpha_short"
+        call check(is_alpha('A'))
+        call check(.not. is_alpha('1'))
+        call check(.not. is_alpha('#'))
 
         ! N.B.: does not return true for non-ASCII Unicode alphabetic characters
-        print *, .not. is_alpha('á')
+        ! call check(.not. is_alpha('á'))
     end subroutine
 
-    subroutine test_is_alpha_2
+    subroutine test_is_alpha_long
         integer :: i
         character(len=:), allocatable :: clist
-        print *, "test_is_alpha_2"
+
+        print *, "test_is_alpha_long"
+
         clist = letters//lowercase//uppercase
         do i = 1, len(clist)
-            print *, is_alpha(clist(i:i))
+            call check(is_alpha(clist(i:i)))
         end do
 
         clist = digits//octal_digits//whitespace
         do i = 1, len(clist)
-            print *, .not. is_alpha(clist(i:i))
+            call check(.not. is_alpha(clist(i:i)))
         end do
     end subroutine
 
-    subroutine test_is_lower_1
-        print *, "test_is_lower_1"
-        print *, is_lower('a')
-        print *, .not. is_lower('A')
-        print *, .not. is_lower('#')
+    subroutine test_is_lower_short
+        print *, "test_is_lower_short"
+        call check(is_lower('a'))
+        call check(.not. is_lower('A'))
+        call check(.not. is_lower('#'))
 
         ! N.B.: does not return true for non-ASCII Unicode lowercase letters
-        print *, .not. is_lower('á')
-        print *, .not. is_lower('Á')
+        ! call check(.not. is_lower('á'))
+        ! call check(.not. is_lower('Á'))
     end subroutine
 
-    subroutine test_is_lower_2
+    subroutine test_is_lower_long
         integer :: i
         character(len=:), allocatable :: clist
-        print *, "test_is_lower_2"
+
+        print *, "test_is_lower_long"
         do i = 1, len(lowercase)
-            print *, is_lower(lowercase(i:i))
+            call check(is_lower(lowercase(i:i)))
         end do
 
         clist = digits//uppercase//whitespace
         do i = 1, len(clist)
-            print *, .not. is_lower(clist(i:i))
+            call check(.not. is_lower(clist(i:i)))
         end do
     end subroutine
 
-    subroutine test_is_upper_1
-        print *, "test_is_upper_1"
-        print *, is_upper('A')
-        print *, .not. is_upper('a')
-        print *, .not. is_upper('#')
+    subroutine test_is_upper_short
+        print *, "test_is_upper_short"
+        call check(is_upper('A'))
+        call check(.not. is_upper('a'))
+        call check(.not. is_upper('#'))
 
         ! N.B.: does not return true for non-ASCII Unicode uppercase letters
-        print *, .not. is_upper('á')
-        print *, .not. is_upper('Á')
+        ! call check(.not. is_upper('á'))
+        ! call check(.not. is_upper('Á'))
     end subroutine
 
-    subroutine test_is_upper_2
+    subroutine test_is_upper_long
         integer :: i
         character(len=:), allocatable :: clist
-        print *, "test_is_upper_2"
+        print *, "test_is_upper_long"
         do i = 1, len(uppercase)
-            print *, is_upper(uppercase(i:i))
+            call check(is_upper(uppercase(i:i)))
         end do
 
         clist = digits//lowercase//whitespace
         do i = 1, len(clist)
-            print *, .not. is_upper(clist(i:i))
+            call check(.not. is_upper(clist(i:i)))
         end do
     end subroutine
 
 
-    subroutine test_is_digit_1
-        print *, "test_is_digit_1"
-        print *, is_digit('3')
-        print *, is_digit('8')
-        print *, .not. is_digit('B')
-        print *, .not. is_digit('#')
+    subroutine test_is_digit_short
+        print *, "test_is_digit_short"
+        call check(is_digit('3'))
+        call check(is_digit('8'))
+        call check(.not. is_digit('B'))
+        call check(.not. is_digit('#'))
 
         ! N.B.: does not return true for non-ASCII Unicode numbers
-        print *, .not. is_digit('０') ! full-width digit zero (U+FF10)
-        print *, .not. is_digit('４') ! full-width digit four (U+FF14)
+        ! call check(.not. is_digit('０')) ! full-width digit zero (U+FF10)
+        ! call check(.not. is_digit('４')) ! full-width digit four (U+FF14))
     end subroutine
 
-    subroutine test_is_digit_2
+    subroutine test_is_digit_long
         integer :: i
         character(len=:), allocatable :: clist
-        print *, "test_is_digit_2"
+        print *, "test_is_digit_long"
         do i = 1, len(digits)
-            print *, is_digit(digits(i:i))
+            call check(is_digit(digits(i:i)))
         end do
 
         clist = letters//whitespace
         do i = 1, len(clist)
-            print *, .not. is_digit(clist(i:i))
+            call check(.not. is_digit(clist(i:i)))
         end do
     end subroutine
 
-    subroutine test_is_octal_digit_1
-        print *, "test_is_octal_digit_1"
-        print *,       is_octal_digit('0')
-        print *,       is_octal_digit('7')
-        print *, .not. is_octal_digit('8')
-        print *, .not. is_octal_digit('A')
-        print *, .not. is_octal_digit('#')
+    subroutine test_is_octal_digit_short
+        print *, "test_is_octal_digit_short"
+        call check(is_octal_digit('0'))
+        call check(is_octal_digit('7'))
+        call check(.not. is_octal_digit('8'))
+        call check(.not. is_octal_digit('A'))
+        call check(.not. is_octal_digit('#'))
     end subroutine
 
-    subroutine test_is_octal_digit_2
+    subroutine test_is_octal_digit_long
         integer :: i
         character(len=:), allocatable :: clist
-        print *, "test_is_octal_digit_2"
+        print *, "test_is_octal_digit_long"
         do i = 1, len(octal_digits)
-            print *, is_octal_digit(octal_digits(i:i))
+            call check(is_octal_digit(octal_digits(i:i)))
         end do
         clist = letters//'89'//whitespace
         do i = 1, len(clist)
-            print *, .not. is_octal_digit(clist(i:i))
+            call check(.not. is_octal_digit(clist(i:i)))
         end do
     end subroutine
 
-    subroutine test_is_hex_digit_1
-        print *, "test_is_hex_digit_1"
-        print *,       is_hex_digit('0')
-        print *,       is_hex_digit('A')
-        print *,       is_hex_digit('f') !! lowercase hex digits are accepted
-        print *, .not. is_hex_digit('g')
-        print *, .not. is_hex_digit('G')
-        print *, .not. is_hex_digit('#')
+    subroutine test_is_hex_digit_short
+        print *, "test_is_hex_digit_short"
+        call check(is_hex_digit('0'))
+        call check(is_hex_digit('A'))
+        call check(is_hex_digit('f')) !! lowercase hex digits are accepted
+        call check(.not. is_hex_digit('g'))
+        call check(.not. is_hex_digit('G'))
+        call check(.not. is_hex_digit('#'))
     end subroutine
 
-    subroutine test_is_hex_digit_2
+    subroutine test_is_hex_digit_long
         integer :: i
         character(len=:), allocatable :: clist
-        print *, "test_is_hex_digit_2"
+        print *, "test_is_hex_digit_long"
         do i = 1, len(fullhex_digits)
-            print *, is_hex_digit(fullhex_digits(i:i))
+            call check(is_hex_digit(fullhex_digits(i:i)))
         end do
         clist = lowercase(7:)//uppercase(7:)//whitespace
         do i = 1, len(clist)
-            print *, .not. is_hex_digit(clist(i:i))
+            call check(.not. is_hex_digit(clist(i:i)))
         end do
     end subroutine
 
-    subroutine test_is_white_1
-        print *, "test_is_white_1"
-        print *, is_white(' ')
-        print *, is_white(TAB)
-        print *, is_white(LF)
-        print *, .not. is_white('1')
-        print *, .not. is_white('a')
-        print *, .not. is_white('#')
+    subroutine test_is_white_short
+        print *, "test_is_white_short"
+        call check(is_white(' '))
+        call check(is_white(TAB))
+        call check(is_white(LF))
+        call check(.not. is_white('1'))
+        call check(.not. is_white('a'))
+        call check(.not. is_white('#'))
     end subroutine
 
-    subroutine test_is_white_2
+    subroutine test_is_white_long
         integer :: i
         character(len=:), allocatable :: clist
-        print *, "test_is_white_2"
+        print *, "test_is_white_long"
         do i = 1, len(whitespace)
-            print *, is_white(whitespace(i:i))
+            call check(is_white(whitespace(i:i)))
         end do
         clist = digits//letters
         do i = 1, len(clist)
-            print *, .not. is_white(clist(i:i))
+            call check(.not. is_white(clist(i:i)))
         end do
     end subroutine
 
-    subroutine test_is_control_1
-        print *, "test_is_control_1"
+    subroutine test_is_blank_short
+        print *, "test_is_blank_short"
+        call check(is_blank(' '))
+        call check(is_blank(TAB))
+        call check(.not. is_blank('1'))
+        call check(.not. is_blank('a'))
+        call check(.not. is_blank('#'))
+    end subroutine
+
+    subroutine test_is_blank_long
+        integer :: i
+        character(len=:), allocatable :: clist
+        print *, "test_is_blank_long"
+        do i = 1, len(whitespace)
+            if (whitespace(i:i) == ' ' .or. whitespace(i:i) == TAB) then
+                call check(is_blank(whitespace(i:i)))
+            else
+                call check(.not. is_blank(whitespace(i:i)))
+            end if
+        end do
+        clist = digits//letters
+        do i = 1, len(clist)
+            call check(.not. is_blank(clist(i:i)))
+        end do
+    end subroutine
+
+    subroutine test_is_control_short
+        print *, "test_is_control_short"
         ! print *, is_control('\0')
         ! print *, is_control('\022')
-        print *, is_control(new_line('a')) ! newline is both whitespace and control
-        print *, .not. is_control(' ')
-        print *, .not. is_control('1')
-        print *, .not. is_control('a')
-        print *, .not. is_control('#')
+        call check(is_control(new_line('a'))) ! newline is both whitespace and control
+        call check(.not. is_control(' '))
+        call check(.not. is_control('1'))
+        call check(.not. is_control('a'))
+        call check(.not. is_control('#'))
 
         ! N.B.: non-ASCII Unicode control characters are not recognized:
         ! print *, .not. is_control('\u0080')
@@ -257,188 +320,193 @@ contains
         ! print *, .not. is_control('\u2029')
     end subroutine
 
-    subroutine test_is_control_2
+    subroutine test_is_control_long
         integer :: i
         character(len=:), allocatable :: clist
-        print *, "test_is_control_2"
+        print *, "test_is_control_long"
         do i = 0, 31
-            print *, is_control(achar(i))
+            call check(is_control(achar(i)))
         end do
-        print *, is_control(del)
+        call check(is_control(DEL))
 
         clist = digits//letters//' '
         do i = 1, len(clist)
-            print *, .not. is_control(clist(i:i)), clist(i:i)
+            call check(.not. is_control(clist(i:i)))
         end do
     end subroutine
 
-    subroutine test_is_punctuation_1
-        print *, "test_is_punctuation_1"
-        print *, is_punctuation('.')
-        print *, is_punctuation(',')
-        print *, is_punctuation(':')
-        print *, is_punctuation('!')
-        print *, is_punctuation('#')
-        print *, is_punctuation('~')
-        print *, is_punctuation('+')
-        print *, is_punctuation('_')
+    subroutine test_is_punctuation_short
+        print *, "test_is_punctuation_short"
+        call check(is_punctuation('.'))
+        call check(is_punctuation(','))
+        call check(is_punctuation(':'))
+        call check(is_punctuation('!'))
+        call check(is_punctuation('#'))
+        call check(is_punctuation('~'))
+        call check(is_punctuation('+'))
+        call check(is_punctuation('_'))
 
-        print *, .not. is_punctuation('1')
-        print *, .not. is_punctuation('a')
-        print *, .not. is_punctuation(' ')
-        print *, .not. is_punctuation(LF) ! new line character
-        print *, .not. is_punctuation(NUL)
+        call check(.not. is_punctuation('1'))
+        call check(.not. is_punctuation('a'))
+        call check(.not. is_punctuation(' '))
+        call check(.not. is_punctuation(LF)) ! new line character
+        call check(.not. is_punctuation(NUL))
 
         ! N.B.: Non-ASCII Unicode punctuation characters are not recognized.
         ! print *, is_punctuation('\u2012') ! (U+2012 = en-dash)
     end subroutine
 
-    subroutine test_is_punctuation_2
+    subroutine test_is_punctuation_long
         integer :: i
         character(len=1) :: c
-        print *, "test_is_punctuation_2"
+        print *, "test_is_punctuation_long"
         do i = 0, 127
             c = achar(i)
             if (is_control(c) .or. is_alphanum(c) .or. c == ' ') then
-                print *, .not. is_punctuation(c)
+                call check(.not. is_punctuation(c))
             else
-                print *, is_punctuation(c)
+                call check(is_punctuation(c))
             end if
         end do
     end subroutine
 
-    subroutine test_is_graphical_1
+    subroutine test_is_graphical_short
         print *, "test_is_graphical"
-        print *, is_graphical('1')
-        print *, is_graphical('a')
-        print *, is_graphical('#')
-        print *, .not. is_graphical(' ') ! whitespace is not graphical
-        print *, .not. is_graphical(LF)
-        print *, .not. is_graphical(NUL)
+        call check(is_graphical('1'))
+        call check(is_graphical('a'))
+        call check(is_graphical('#'))
+        call check(.not. is_graphical(' ')) ! whitespace is not graphical
+        call check(.not. is_graphical(LF))
+        call check(.not. is_graphical(NUL))
 
         ! N.B.: Unicode graphical characters are not regarded as such.
-        print *, .not. is_graphical('ä')
+        ! call check(.not. is_graphical('ä'))
     end subroutine
 
-    subroutine test_is_graphical_2
+    subroutine test_is_graphical_long
         integer :: i
         character(len=1) :: c
-        print *, "test_is_graphical_2"
+        print *, "test_is_graphical_long"
         do i = 0, 127
             c = achar(i)
             if (is_control(c) .or. c == ' ') then
-                print *, .not. is_graphical(c)
+                call check(.not. is_graphical(c))
             else
-                print *, is_graphical(c)
+                call check(is_graphical(c))
             end if
         end do
     end subroutine
 
-    subroutine test_is_printable_1
-        print *, "test_is_printable_1"
-        print *, is_printable(' ') ! whitespace is printable
-        print *, is_printable('1')
-        print *, is_printable('a')
-        print *, is_printable('#')
-        print *, .not. is_printable(NUL) ! control characters are not printable
+    subroutine test_is_printable_short
+        print *, "test_is_printable_short"
+        call check(is_printable(' ')) ! whitespace is printable
+        call check(is_printable('1'))
+        call check(is_printable('a'))
+        call check(is_printable('#'))
+        call check(.not. is_printable(NUL)) ! control characters are not printable
 
         ! N.B.: Printable non-ASCII Unicode characters are not recognized.
-        print *, .not. is_printable('ä')
+        ! call check(.not. is_printable('ä'))
     end subroutine
 
-    subroutine test_is_printable_2
+    subroutine test_is_printable_long
         integer :: i
         character(len=1) :: c
-        print *, "test_is_printable_2"
+        print *, "test_is_printable_long"
         do i = 0, 127
             c = achar(i)
             if (is_control(c)) then
-                print *, .not. is_printable(c)
+                call check(.not. is_printable(c))
             else
-                print *, is_printable(c)
+                call check(is_printable(c))
             end if
         end do
     end subroutine
 
-    subroutine test_is_ascii_1()
-        print *, "test_is_ascii_1"
-        print *, is_ascii('a')
-        print *, .not. is_ascii('ä')
+    subroutine test_is_ascii_short()
+        print *, "test_is_ascii_short"
+        call check(is_ascii('a'))
+        call check(.not. is_ascii('ä'))
     end subroutine
 
-    subroutine test_is_ascii_2()
+    subroutine test_is_ascii_long()
         integer :: i
-        print *, "test_is_ascii_2"
+        print *, "test_is_ascii_long"
         do i = 0, 127
-            print *, i, is_ascii(achar(i))
+            call check(is_ascii(achar(i)))
         end do
-        print *, 128, .not. is_ascii(achar(128)) ! raises compiler warning
+        call check(.not. is_ascii(achar(128))) ! raises compiler warning
 
     end subroutine
 
-    subroutine test_to_lower_1()
-        print *, to_lower('a') == 'a'
-        print *, to_lower('A') == 'a'
-        print *, to_lower('#') == '#'
+    subroutine test_to_lower_short()
+        print *, "test_to_lower_short"
+        call check(to_lower('a') == 'a')
+        call check(to_lower('A') == 'a')
+        call check(to_lower('#') == '#')
     end subroutine
 
-    subroutine test_to_lower_2()
+    subroutine test_to_lower_long()
         integer :: i
         character(len=1) :: c
+        print *, "test_to_lower_long"
         do i = 1, len(uppercase)
-            print *, to_lower(uppercase(i:i)) == lowercase(i:i)
+            call check(to_lower(uppercase(i:i)) == lowercase(i:i))
         end do
         do i = 0, 127
             c = achar(i)
             if (c < 'A' .or. c > 'Z') then
-                print *, to_lower(c) == c
+                call check(to_lower(c) == c)
             else
-                print *, to_lower(c) /= c
+                call check(to_lower(c) /= c)
             end if
         end do
     end subroutine
 
-    subroutine test_to_upper_1()
-        print *, to_upper('a') == 'A'
-        print *, to_upper('A') == 'A'
-        print *, to_upper('#') == '#'
+    subroutine test_to_upper_short()
+        print *, "test_to_upper_short"
+        call check(to_upper('a') == 'A')
+        call check(to_upper('A') == 'A')
+        call check(to_upper('#') == '#')
     end subroutine
 
-    subroutine test_to_upper_2()
+    subroutine test_to_upper_long()
         integer :: i
         character(len=1) :: c
+        print *, "test_to_upper_long"
         do i = 1, len(lowercase)
-            print *, to_upper(lowercase(i:i)) == uppercase(i:i)
+            call check(to_upper(lowercase(i:i)) == uppercase(i:i))
         end do
+
         do i = 0, 127
             c = achar(i)
             if (c < 'a' .or. c > 'z') then
-                print *, to_upper(c) == c
+                call check(to_upper(c) == c)
             else
-                print *, to_upper(c) /= c
+                call check(to_upper(c) /= c)
             end if
         end do
     end subroutine
 
-    !>
+    !
     !   This test reproduces the true/false table found at
     !   https://en.cppreference.com/w/cpp/string/byte
+    !
     subroutine test_ascii_table
         integer :: i, j
-        character(len=1) :: c
         logical :: table(15,12)
 
         abstract interface
-            pure logical function validation_interface(c)
+            pure logical function validation_func_interface(c)
                 character(len=1), intent(in) :: c
             end function
         end interface
 
-        type :: arrprocpointer
-            procedure(validation_interface), pointer, nopass :: pcf
-        end type arrprocpointer
+        type :: proc_pointer_array
+            procedure(validation_func_interface), pointer, nopass :: pcf
+        end type proc_pointer_array
 
-        type(arrprocpointer) :: pcfs(12)
+        type(proc_pointer_array) :: pcfs(12)
 
         pcfs(1)%pcf => is_control
         pcfs(2)%pcf => is_printable
@@ -453,28 +521,31 @@ contains
         pcfs(11)%pcf => is_digit
         pcfs(12)%pcf => is_hex_digit
 
+        ! loop through functions
         do i = 1, 12
-            table(1,i) = all([(pcfs(i)%pcf(achar(j)),j=0,8)])
-            table(2,i) = pcfs(i)%pcf(achar(9))
-            table(3,i) = all([(pcfs(i)%pcf(achar(j)),j=10,13)])
-            table(4,i) = all([(pcfs(i)%pcf(achar(j)),j=14,31)])
-            table(5,i) = pcfs(i)%pcf(achar(32))
-            table(6,i) = all([(pcfs(i)%pcf(achar(j)),j=33,47)])
-            table(7,i) = all([(pcfs(i)%pcf(achar(j)),j=48,57)])
-            table(8,i) = all([(pcfs(i)%pcf(achar(j)),j=58,64)])
-            table(9,i) = all([(pcfs(i)%pcf(achar(j)),j=65,70)])
-            table(10,i) = all([(pcfs(i)%pcf(achar(j)),j=71,90)])
-            table(11,i) = all([(pcfs(i)%pcf(achar(j)),j=91,96)])
-            table(12,i) = all([(pcfs(i)%pcf(achar(j)),j=97,102)])
-            table(13,i) = all([(pcfs(i)%pcf(achar(j)),j=103,122)])
-            table(14,i) = all([(pcfs(i)%pcf(achar(j)),j=123,126)])
-            table(15,i) = pcfs(i)%pcf(achar(127))
+            table(1,i)  = all([(pcfs(i)%pcf(achar(j)),j=0,8)])      ! control codes
+            table(2,i)  = pcfs(i)%pcf(achar(9))                     ! tab
+            table(3,i)  = all([(pcfs(i)%pcf(achar(j)),j=10,13)])    ! whitespaces
+            table(4,i)  = all([(pcfs(i)%pcf(achar(j)),j=14,31)])    ! control codes
+            table(5,i)  = pcfs(i)%pcf(achar(32))                    ! space
+            table(6,i)  = all([(pcfs(i)%pcf(achar(j)),j=33,47)])    ! !"#$%&'()*+,-./
+            table(7,i)  = all([(pcfs(i)%pcf(achar(j)),j=48,57)])    ! 0123456789
+            table(8,i)  = all([(pcfs(i)%pcf(achar(j)),j=58,64)])    ! :;<=>?@
+            table(9,i)  = all([(pcfs(i)%pcf(achar(j)),j=65,70)])    ! ABCDEF
+            table(10,i) = all([(pcfs(i)%pcf(achar(j)),j=71,90)])    ! GHIJKLMNOPQRSTUVWXYZ
+            table(11,i) = all([(pcfs(i)%pcf(achar(j)),j=91,96)])    ! [\]^_`
+            table(12,i) = all([(pcfs(i)%pcf(achar(j)),j=97,102)])   ! abcdef
+            table(13,i) = all([(pcfs(i)%pcf(achar(j)),j=103,122)])  ! ghijklmnopqrstuvwxyz
+            table(14,i) = all([(pcfs(i)%pcf(achar(j)),j=123,126)])  ! {|}~
+            table(15,i) = pcfs(i)%pcf(achar(127))                   ! backspace character
         end do
 
+        ! output table for verification
         write(*,'(5X,12(I4))') (i,i=1,12)
         do j = 1, 15
             write(*,'(I3,2X,12(L4),2X,I3)') j, (table(j,i),i=1,12), count(table(j,:))
         end do
         write(*,'(5X,12(I4))') (count(table(:,i)),i=1,12)
-    end subroutine
-end program
+    end subroutine test_ascii_table
+
+end program test_ascii
