@@ -6,12 +6,11 @@
 # FFLAGS = -warn all -traceback -std08
 # FFLAGS = -warn all -O3
 
+CPP = g++
+CPPFLAGS = -Wall -O3
+
 EXECS = test_ascii generate_ascii_table benchmark_f90 benchmark_cpp generate_characters
 
-#-------------------------------------------------------------
-# This section contains default rule for creating Fortran
-# object files.
-#-------------------------------------------------------------
 .PHONY.: all
 all: $(EXECS)
 
@@ -24,12 +23,19 @@ generate_ascii_table: generate_ascii_table.o fortran_ascii.o fortran_ascii_pure.
 benchmark_f90: benchmark.o fortran_ascii.o $(SM)
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
 
-benchmark_cpp: benchmark_cpp.cpp
-	g++ -Wall -O3 -o $@ $^
+benchmark_cpp: benchmark_cpp.o
+	$(CPP) $(CPPFLAGS) -o $@ $^
 
 generate_characters: generate_characters.o
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
 
+#-------------------------------------------------------------
+# This section contains default rule for creating Fortran
+# object files.
+#-------------------------------------------------------------
+
+%.o: %.cpp
+	$(CPP) $(CPPFLAGS) -c $<
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<
 %.o: %.f90
