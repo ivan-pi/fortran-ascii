@@ -313,7 +313,7 @@ Indexes:
 103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122
 ```
 
-We can incorporate these indexes into a select case construct
+We can incorporate these indexes into a select case construct.
 
 
 ### C binding
