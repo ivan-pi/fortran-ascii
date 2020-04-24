@@ -5,7 +5,7 @@ module cctype
   public
 
   !
-  ! Character classificiation functions
+  ! Character classification functions
   !
   interface
 

@@ -1,7 +1,6 @@
 # FC = gfortran-9
 # FFLAGS = -Wall -Wextra -pedantic -Wimplicit-interface -fPIC -g -fcheck=all
 
-
 # FC = ifort
 # FFLAGS = -warn all -traceback -std08
 # FFLAGS = -warn all -O3
