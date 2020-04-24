@@ -8,7 +8,7 @@
 CPP = g++
 CPPFLAGS = -Wall -O3
 
-EXECS = test_ascii generate_ascii_table benchmark_f90 benchmark_cpp generate_characters
+EXECS = test_ascii generate_ascii_table reduce_ascii_table benchmark_f90 benchmark_cpp generate_characters
 
 .PHONY.: all
 all: $(EXECS)
@@ -16,7 +16,10 @@ all: $(EXECS)
 test_ascii: test_ascii.o fortran_ascii.o $(SM)
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
 
-generate_ascii_table: generate_ascii_table.o fortran_ascii.o fortran_ascii_pure.o
+generate_ascii_table: generate_ascii_table.o fortran_ascii.o fortran_ascii_pure.o mod_functional.o
+	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
+
+reduce_ascii_table: reduce_ascii_table.o mod_functional.o
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
 
 benchmark_f90: benchmark.o fortran_ascii.o $(SM)
@@ -47,8 +50,11 @@ fortran_ascii_pure.o: fortran_ascii.o
 fortran_ascii_selectcase.o: fortran_ascii.o
 
 test_ascii.o: fortran_ascii.o
-generate_ascii_table.o: fortran_ascii.o
+generate_ascii_table.o: fortran_ascii.o mod_functional.o
+reduce_ascii_table.o: mod_functional.o
 benchmark.o: fortran_ascii.o
+
+mod_functional.o: mod_interfaces.o
 
 #----------------------------------------------
 # This section shows how to clean up afterward.

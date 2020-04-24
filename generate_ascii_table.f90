@@ -1,16 +1,16 @@
-program gen_ascii_table
+program generate_ascii_table
 
+    use iso_fortran_env, only: int16
     use fortran_ascii
-
+    use mod_functional, only: set
     implicit none
-    integer, parameter :: ik = selected_int_kind(3)
-    integer, parameter :: ascii = selected_char_kind('ASCII')
 
-    integer(ik) :: ascii_table(0:127), i
+    integer(int16) :: ascii_table(0:127), i, j
+    integer(int16), allocatable :: ascii_table_set(:)
     character(len=1) :: c
     logical :: res
 
-    ! initialize all bits to zero
+    ! Initialize all bits to zero
     ascii_table = 0
 
     do i = 0, 127
@@ -36,11 +36,24 @@ program gen_ascii_table
     do i = 0, 127
         c = achar(i)
         if (is_graphical(c)) then
-            write(*,*) i, c, ascii_table(i)
+            write(*,'(I3,3X,A,3X,I4,3X,B0.13)') i, c, ascii_table(i), ascii_table(i)
         end if
     end do
     
+    write(*,'(/,A)') "Full table:"
     write(*,'(A1,128(I0,:,","))',advance='no') "[",(ascii_table(i),i=0,127)
     write(*,'(A1)') "]"
+
+    ascii_table_set = set(ascii_table)
+
+    write(*,'(/,A)') "Reduced table:"
+    write(*,'(A1,*(I0,:,","))',advance='no') "[",ascii_table_set
+    write(*,'(A1)') "]"
+
+    write(*,'(/,A)') "Indexes:"
+    do i=1,size(ascii_table_set)
+        write(*,'("[",*(I0,:,","))',advance='no') pack([(j,j=0,127)],ascii_table==ascii_table_set(i))
+        write(*,'(A1)') "]"
+    end do
 
 end program
