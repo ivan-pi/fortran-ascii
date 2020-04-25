@@ -89,7 +89,8 @@ contains
   !>  Checks whether `c` is an uppercase ASCII letter (A .. Z).
   pure module logical function is_upper(c)
     character(len=1), intent(in) :: c !! The character to test.
-    is_upper = (c >= 'A') .and. (c <= 'Z')
+    ! is_upper = (c >= 'A') .and. (c <= 'Z')
+    is_upper = (c <= 'Z') .and. (c >= 'A')
   end function
 
   !>  Checks whether or not `c` is a whitespace character. That includes the

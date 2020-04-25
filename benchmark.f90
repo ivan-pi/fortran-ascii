@@ -44,7 +44,8 @@ contains
         integer :: i, j, reps, unit
         real(dp) :: t1, t2, total
         logical :: res
-
+        integer(8) :: c1, c2, cr
+        call system_clock(count_rate=cr)
         allocate(character(len=sz) :: chars)
 
         open(newunit=unit,file=filename)
@@ -54,14 +55,18 @@ contains
         do j = 1, 12
             total = 0.0_dp
             do reps = 1, 10
-                call cpu_time(t1)
+                ! call cpu_time(t1)
+                call system_clock(count=c1)
                 do i = 1, sz
                     res = pcfs(j)%pcf(chars(i:i))
                 end do
-                call cpu_time(t2)
-                total = total + (t2 - t1)
+                ! call cpu_time(t2)
+                call system_clock(count=c2)
+                ! total = total + (t2 - t1)
+                total = total + real(c2 - c1,dp)
             end do
-            times(j) = total/10.0_dp
+            ! times(j) = total/10.0_dp
+            times(j) = total/(10.0_dp*cr)
         end do
 
         close(unit)
@@ -71,21 +76,27 @@ end module
 
 program benchmark
 
-    use time_ascii
-    implicit none
+  use time_ascii
+  implicit none
 
-    integer :: exp, sz
-    character(len=30) :: filename
-    real(dp) :: times(12)
+  integer :: exp, sz
+  character(len=30) :: filename
+  real(dp) :: times(12)
 
-    call init_procedures
+  character(14) :: funcs(12) = [ character(14) :: 'is_control','is_printable','is_white',&
+  'is_blank','is_graphical','is_punctuation','is_alphanum','is_alpha','is_upper',&
+  'is_lower','is_digit','is_hex_digit']   
 
-    do exp = 3, 8
-        sz = 10**exp
-        write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
-        ! print *, filename
-        call time_character_file(trim(filename),sz,times)
-        write(*,'(I0,12E11.4)') sz, times
-    end do
+
+  call init_procedures
+
+  write(*,'(A9,*(X,A14))') "#        ", adjustr(funcs)
+  do exp = 3, 8
+      sz = 10**exp
+      write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+      ! print *, filename
+      call time_character_file(trim(filename),sz,times)
+      write(*,'(I9,*(X,E14.6))') sz, times
+  end do
 
 end program

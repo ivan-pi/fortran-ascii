@@ -4,8 +4,10 @@
 # FC = ifort
 # FFLAGS = -warn all -traceback -std08
 # FFLAGS = -warn all -O3
+CC=gcc-9
+CCFLAGS= -Wall -O3
 
-CPP = g++
+CPP = g++-9
 CPPFLAGS = -Wall -O3
 
 EXECS = test_ascii generate_ascii_table reduce_ascii_table benchmark_f90 benchmark_cpp generate_characters
@@ -36,6 +38,8 @@ generate_characters: generate_characters.o
 # object files.
 #-------------------------------------------------------------
 
+%.o: %.c
+	$(CC) $(CCFLAGS) -c $<
 %.o: %.cpp
 	$(CPP) $(CPPFLAGS) -c $<
 %.o: %.f
@@ -53,8 +57,8 @@ test_ascii.o: fortran_ascii.o
 generate_ascii_table.o: fortran_ascii.o mod_functional.o
 reduce_ascii_table.o: mod_functional.o
 benchmark.o: fortran_ascii.o
-
 mod_functional.o: mod_interfaces.o
+
 
 #----------------------------------------------
 # This section shows how to clean up afterward.

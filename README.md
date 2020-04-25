@@ -5,8 +5,7 @@ This repository contains Fortran routines aiming to reproduce the functionality 
 Currently, this is just my personal testing ground that should later become a pull request to the Fortran [stdlib] project (see also issue https://github.com/fortran-lang/stdlib/issues/11 and my previous pull requests https://github.com/fortran-lang/stdlib/pull/32, https://github.com/fortran-lang/stdlib/pull/49).
 
 TODO: 
- * Unicode support
- * Test wrapping the C++ library routines
+ * Unicode support (or wide characters in general)
 
 ## Routines
 
@@ -105,7 +104,7 @@ As noted on the [C character classification](https://en.wikipedia.org/wiki/C_cha
 
 > ...the character classification routines are not written as comparison tests. In most C libraries, they are written as static table lookups instead of macros or functions. 
 
-This approach can be mimicked also in Fortran. Since there are 13 functions (excluding `is_ascii`) we require an integer with a storage size of at least 13 bits. We can generate the lookup table using either the "direct" or "select-case" approach (having verified its correctness first) to set the individual bit values in the lookup table.
+This approach can be mimicked also in Fortran. Since there are 13 functions (excluding `is_ascii`) we require an integer with a storage size of at least 13 bits. We can generate the lookup table using either the "direct" or "select-case" approach (having validated it first) to set the individual bit values in the lookup table.
 
 The following program generates the table and outputs the result as a formatted array:
 ```fortran
@@ -337,7 +336,7 @@ module cctype
       integer(c_int), intent(in), value :: c
     end function iscntrl
 
-    ...
+    ! ... remaining functions ...
 
   end interface
 end module
