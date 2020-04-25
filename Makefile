@@ -24,7 +24,10 @@ generate_ascii_table: generate_ascii_table.o fortran_ascii.o fortran_ascii_pure.
 reduce_ascii_table: reduce_ascii_table.o mod_functional.o
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
 
-benchmark_f90: benchmark.o fortran_ascii.o $(SM)
+print_table: print_table.o fortran_ascii.o fortran_ascii_bit.o
+	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
+
+benchmark_f90: benchmark_f90.o fortran_ascii.o $(SM)
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
 
 benchmark_cpp: benchmark_cpp.o
@@ -56,9 +59,9 @@ fortran_ascii_selectcase.o: fortran_ascii.o
 test_ascii.o: fortran_ascii.o
 generate_ascii_table.o: fortran_ascii.o mod_functional.o
 reduce_ascii_table.o: mod_functional.o
-benchmark.o: fortran_ascii.o
+benchmark_f90.o: fortran_ascii.o
 mod_functional.o: mod_interfaces.o
-
+print_table.o: fortran_ascii.o
 
 #----------------------------------------------
 # This section shows how to clean up afterward.

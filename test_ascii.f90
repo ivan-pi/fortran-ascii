@@ -427,6 +427,7 @@ contains
         print *, "test_is_ascii_short"
         call check(is_ascii('a'))
         call check(.not. is_ascii('ä'))
+        ! print *, len('ä'), len('a'), bit_size(iachar('ä')), bit_size(iachar('a'))
     end subroutine
 
     subroutine test_is_ascii_long()

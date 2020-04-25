@@ -6,6 +6,8 @@ module fortran_ascii
   !-------------
   ! Public API
   !-------------
+  
+  !public :: print_lookup_table
 
   !
   ! Character validation functions
@@ -219,5 +221,10 @@ module fortran_ascii
     end function to_upper
 
   end interface
+
+  ! interface
+  !   module subroutine print_lookup_table()
+  !   end subroutine
+  ! end interface
 
 end module

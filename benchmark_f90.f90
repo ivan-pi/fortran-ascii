@@ -66,7 +66,7 @@ contains
                 total = total + real(c2 - c1,dp)
             end do
             ! times(j) = total/10.0_dp
-            times(j) = total/(10.0_dp*cr)
+            times(j) = total/(10.0_dp*cr*sz)
         end do
 
         close(unit)

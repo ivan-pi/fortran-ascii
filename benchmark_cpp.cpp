@@ -41,7 +41,7 @@ int main () {
           clock_t end = clock();
           duration += (end - start);
         }
-        times[j] = duration / ((double)CLOCKS_PER_SEC) / 10;
+        times[j] = duration / ((double)CLOCKS_PER_SEC) / ((double) 10) / ((double) sz);
       }
     }
 
