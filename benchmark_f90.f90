@@ -62,7 +62,7 @@ contains
                 end do
             end do
             call system_clock(count=c2)
-            times(j) = real(c2-c1,dp)/(10.0_dp*cr*sz)
+            times(j) = (10*sz)/(real(c2-c1,dp)/real(cr,dp))
         end do
 
         close(unit)

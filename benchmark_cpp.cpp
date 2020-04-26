@@ -40,7 +40,7 @@ int main () {
           }
         }
         clock_t end = clock();
-        times[j] = (end - start) / ((double)CLOCKS_PER_SEC) / ((double) 10*sz);
+        times[j] = ((double) 10*sz) / ((end - start) / ((double)CLOCKS_PER_SEC));
       }
     }
 
