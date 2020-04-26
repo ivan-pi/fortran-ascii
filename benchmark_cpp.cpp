@@ -44,10 +44,10 @@ int main () {
       }
     }
 
-    std::cout << sz << ' ';
+    printf("%9d",sz);
     for (int i = 0; i < 12; ++i)
-      std::cout << times[i] << ' ';
-    std::cout << '\n';
+      printf(" %14.6e",times[i]);
+    printf("\n");
   }
 
   return 0;
