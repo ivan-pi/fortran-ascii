@@ -162,16 +162,16 @@ integer, parameter :: diff_case = iachar('A')-iachar('a')
 
 contains
 
-  module subroutine print_lookup_table()
-    integer :: i
-    character(len=1) :: c
-    do i = 0, 127
-        c = achar(i)
-        if (is_printable(c)) then
-          write(*,'(I3,3X,A,3X,I4,3X,B0.16)') i, c, table(i), table(i)
-        end if
-    end do
-  end subroutine
+  ! module subroutine print_lookup_table()
+  !   integer :: i
+  !   character(len=1) :: c
+  !   do i = 0, 127
+  !       c = achar(i)
+  !       if (is_printable(c)) then
+  !         write(*,'(I3,3X,A,3X,I4,3X,B0.16)') i, c, table(i), table(i)
+  !       end if
+  !   end do
+  ! end subroutine
 
   !>  Checks whether `c` is an ASCII letter (A .. Z, a .. z).
   pure module logical function is_alpha(c)

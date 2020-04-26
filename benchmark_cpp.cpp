@@ -32,16 +32,15 @@ int main () {
       is.read(buffer.data(),sz);
 
       for (int j = 0; j < 12; ++j) {
-        double duration = 0;
+
+        clock_t start = clock();
         for (int reps = 0; reps < 10; ++reps) {
-          clock_t start = clock();
           for (int n = 0; n < sz; ++n) {
             int res = funcs[j](buffer[n]);
           }
-          clock_t end = clock();
-          duration += (end - start);
         }
-        times[j] = duration / ((double)CLOCKS_PER_SEC) / ((double) 10) / ((double) sz);
+        clock_t end = clock();
+        times[j] = (end - start) / ((double)CLOCKS_PER_SEC) / ((double) 10*sz);
       }
     }
 

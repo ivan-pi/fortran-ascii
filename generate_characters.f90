@@ -103,7 +103,7 @@ program generate_chars
     integer :: exp, sz
     character(len=30) :: filename
 
-    do exp = 1, 8
+    do exp = 3, 8
         sz = 10**exp
         write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
         print *, filename

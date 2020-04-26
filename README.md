@@ -7,6 +7,40 @@ Currently, this is just my personal testing ground that should later become a pu
 TODO: 
  * Unicode support (or wide characters in general)
 
+## Building
+
+```
+git clone https://github.com/ivan-pi/fortran-ascii
+cd fortran-ascii
+```
+
+A Makefile is provided to build the following executables via `make <target>`, where target is one of:
+* `test_ascii` (default target): test routines for the ASCII functions
+* `benchmark_f90`: benchmarking the Fortran routines
+* `benchmark_cpp`: benchmark the C++ routines
+* `generate_characters`: generates character strings used by the benchmarks
+* `generate_ascii_table`: generates the ASCII lookup table (not relevant anymore)
+* `print_table`: print the lookup table defined in `fortran_ascii_bits.f90`
+
+To set the compiler and flags use:
+```
+make FC=gfortran-9 FFLAGS="-O3 -march=native" benchmark_f90
+```
+
+One of the main goals of this repository is to test different implementations of the character routines (see sections below). This can be done very smoothly using submodules, which separate the function interfaces from the actual implementations.
+
+The Makefile uses the `SM` variable to link with a specific submodule:
+```
+make SM=bit benchmark_f90
+```
+Try switching between `pure`, `bit`, `selectcase`, and `cctype`, and comparing the performance. 
+
+A shell script is available to run benchmarks for all four implementations and a reference in C++:
+```
+./run_benchmarks.sh
+```
+The results in *seconds per processed character* are exported as txt files. If you switch the compiler run `make clean` between trials.
+
 ## Routines
 
 ### Character classification
@@ -104,7 +138,7 @@ As noted on the [C character classification](https://en.wikipedia.org/wiki/C_cha
 
 > ...the character classification routines are not written as comparison tests. In most C libraries, they are written as static table lookups instead of macros or functions. 
 
-This approach can be mimicked also in Fortran. Since there are 13 functions (excluding `is_ascii`) we require an integer with a storage size of at least 13 bits to encode the various properties. Here we simply use the `int16` from the `iso_fortran_env` module. On architectures with word sizes smaller than 8 bits, it might be benefical to use the result of `selected_int_kind(4)`; this covers integers in the range from -10^4 to 10^4 (exclusive), thereby including the largest necessary mask 2^12 = 4096. First we create the bitmasks for the different character properties by left-shifting the value one:
+This approach can be mimicked also in Fortran. Since there are 13 functions (excluding `is_ascii`) we require an integer with a storage size of at least 13 bits to encode the various properties. ~(Perhaps even 11-bits suffice.)~ Here we simply use the `int16` from the `iso_fortran_env` module. On architectures with word sizes smaller than 8 bits, it might be benefical to use the result of `selected_int_kind(4)`; this covers integers in the range from -10^4 to 10^4 (exclusive), thereby including the largest necessary mask 2^12 = 4096. First we create the bitmasks for the different character properties by left-shifting the value one:
 ```fortran
 integer(i16), parameter :: m_upper       = shiftl(1_i16,0)
 integer(i16), parameter :: m_lower       = shiftl(1_i16,1)
