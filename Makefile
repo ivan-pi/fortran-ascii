@@ -13,7 +13,7 @@ CFLAGS= -Wall -O3
 CPP = g++
 CPPFLAGS = -Wall -O3
 
-SM=pure
+SM=cctype
 
 EXECS = test_ascii \
 		benchmark_f90 \
@@ -36,7 +36,7 @@ generate_ascii_byte_table: generate_ascii_byte_table.o fortran_ascii.o fortran_a
 print_table: print_table.o fortran_ascii.o fortran_ascii_bit.o
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
 
-benchmark_f90: benchmark_f90.o fortran_ascii.o fortran_ascii_$(SM).o
+benchmark_f90: benchmark_f90.o fortran_ascii.o fortran_ascii_$(SM).o is_alpha_mod.o
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
 
 benchmark_cpp: benchmark_cpp.o
@@ -65,7 +65,7 @@ fortran_ascii_selectcase.o: fortran_ascii.o
 test_ascii.o: fortran_ascii.o
 generate_ascii_table.o: fortran_ascii.o
 generate_ascii_byte_table.o: fortran_ascii.o
-benchmark_f90.o: fortran_ascii.o
+benchmark_f90.o: fortran_ascii.o is_alpha_mod.o
 print_table.o: fortran_ascii.o
 
 #-------------------------------------------------------------

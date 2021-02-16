@@ -6,7 +6,7 @@ module fortran_ascii
   !-------------
   ! Public API
   !-------------
-  
+
   !public :: print_lookup_table
 
   !
@@ -27,81 +27,81 @@ module fortran_ascii
   !--------------------------
   ! Ascii control characters
   !--------------------------
-  
+
   !
   ! Control characters in the ASCII table (see www.asciitable.com).
   !
-  character(len=1), public, parameter :: ascii_nul = achar(z'00') !! Null
-  character(len=1), public, parameter :: ascii_soh = achar(z'01') !! Start of heading
-  character(len=1), public, parameter :: ascii_stx = achar(z'02') !! Start of text
-  character(len=1), public, parameter :: ascii_etx = achar(z'03') !! End of text
-  character(len=1), public, parameter :: ascii_eot = achar(z'04') !! End of transmission
-  character(len=1), public, parameter :: ascii_enq = achar(z'05') !! Enquiry
-  character(len=1), public, parameter :: ascii_ack = achar(z'06') !! Acknowledge
-  character(len=1), public, parameter :: ascii_bel = achar(z'07') !! Bell
-  character(len=1), public, parameter :: ascii_bs  = achar(z'08') !! Backspace
-  character(len=1), public, parameter :: ascii_tab = achar(z'09') !! Horizontal tab
-  character(len=1), public, parameter :: ascii_lf  = achar(z'0A') !! NL line feed, new line
-  character(len=1), public, parameter :: ascii_vt  = achar(z'0B') !! Vertical tab
-  character(len=1), public, parameter :: ascii_ff  = achar(z'0C') !! NP form feed, new page
-  character(len=1), public, parameter :: ascii_cr  = achar(z'0D') !! Carriage return
-  character(len=1), public, parameter :: ascii_so  = achar(z'0E') !! Shift out
-  character(len=1), public, parameter :: ascii_si  = achar(z'0F') !! Shift in
-  character(len=1), public, parameter :: ascii_dle = achar(z'10') !! Data link escape
-  character(len=1), public, parameter :: ascii_dc1 = achar(z'11') !! Device control 1
-  character(len=1), public, parameter :: ascii_dc2 = achar(z'12') !! Device control 2
-  character(len=1), public, parameter :: ascii_dc3 = achar(z'13') !! Device control 3
-  character(len=1), public, parameter :: ascii_dc4 = achar(z'14') !! Device control 4
-  character(len=1), public, parameter :: ascii_nak = achar(z'15') !! Negative acknowledge
-  character(len=1), public, parameter :: ascii_syn = achar(z'16') !! Synchronous idle
-  character(len=1), public, parameter :: ascii_etb = achar(z'17') !! End of transmission block
-  character(len=1), public, parameter :: ascii_can = achar(z'18') !! Cancel
-  character(len=1), public, parameter :: ascii_em  = achar(z'19') !! End of medium
-  character(len=1), public, parameter :: ascii_sub = achar(z'1A') !! Substitute
-  character(len=1), public, parameter :: ascii_esc = achar(z'1B') !! Escape
-  character(len=1), public, parameter :: ascii_fs  = achar(z'1C') !! File separator
-  character(len=1), public, parameter :: ascii_gs  = achar(z'1D') !! Group separator
-  character(len=1), public, parameter :: ascii_rs  = achar(z'1E') !! Record separator
-  character(len=1), public, parameter :: ascii_us  = achar(z'1F') !! Unit separator
-  character(len=1), public, parameter :: ascii_del = achar(z'7F') !! Delete
+  character(len=1), public, parameter :: ascii_nul = achar(int(z'00')) !! Null
+  character(len=1), public, parameter :: ascii_soh = achar(int(z'01')) !! Start of heading
+  character(len=1), public, parameter :: ascii_stx = achar(int(z'02')) !! Start of text
+  character(len=1), public, parameter :: ascii_etx = achar(int(z'03')) !! End of text
+  character(len=1), public, parameter :: ascii_eot = achar(int(z'04')) !! End of transmission
+  character(len=1), public, parameter :: ascii_enq = achar(int(z'05')) !! Enquiry
+  character(len=1), public, parameter :: ascii_ack = achar(int(z'06')) !! Acknowledge
+  character(len=1), public, parameter :: ascii_bel = achar(int(z'07')) !! Bell
+  character(len=1), public, parameter :: ascii_bs  = achar(int(z'08')) !! Backspace
+  character(len=1), public, parameter :: ascii_tab = achar(int(z'09')) !! Horizontal tab
+  character(len=1), public, parameter :: ascii_lf  = achar(int(z'0A')) !! NL line feed, new line
+  character(len=1), public, parameter :: ascii_vt  = achar(int(z'0B')) !! Vertical tab
+  character(len=1), public, parameter :: ascii_ff  = achar(int(z'0C')) !! NP form feed, new page
+  character(len=1), public, parameter :: ascii_cr  = achar(int(z'0D')) !! Carriage return
+  character(len=1), public, parameter :: ascii_so  = achar(int(z'0E')) !! Shift out
+  character(len=1), public, parameter :: ascii_si  = achar(int(z'0F')) !! Shift in
+  character(len=1), public, parameter :: ascii_dle = achar(int(z'10')) !! Data link escape
+  character(len=1), public, parameter :: ascii_dc1 = achar(int(z'11')) !! Device control 1
+  character(len=1), public, parameter :: ascii_dc2 = achar(int(z'12')) !! Device control 2
+  character(len=1), public, parameter :: ascii_dc3 = achar(int(z'13')) !! Device control 3
+  character(len=1), public, parameter :: ascii_dc4 = achar(int(z'14')) !! Device control 4
+  character(len=1), public, parameter :: ascii_nak = achar(int(z'15')) !! Negative acknowledge
+  character(len=1), public, parameter :: ascii_syn = achar(int(z'16')) !! Synchronous idle
+  character(len=1), public, parameter :: ascii_etb = achar(int(z'17')) !! End of transmission block
+  character(len=1), public, parameter :: ascii_can = achar(int(z'18')) !! Cancel
+  character(len=1), public, parameter :: ascii_em  = achar(int(z'19')) !! End of medium
+  character(len=1), public, parameter :: ascii_sub = achar(int(z'1A')) !! Substitute
+  character(len=1), public, parameter :: ascii_esc = achar(int(z'1B')) !! Escape
+  character(len=1), public, parameter :: ascii_fs  = achar(int(z'1C')) !! File separator
+  character(len=1), public, parameter :: ascii_gs  = achar(int(z'1D')) !! Group separator
+  character(len=1), public, parameter :: ascii_rs  = achar(int(z'1E')) !! Record separator
+  character(len=1), public, parameter :: ascii_us  = achar(int(z'1F')) !! Unit separator
+  character(len=1), public, parameter :: ascii_del = achar(int(z'7F')) !! Delete
 
   !
   ! Same, but as a tiny namespace
   !
   type :: ascii_control_char_t
-    character(len=1) :: nul = achar(z'00') !! Null
-    character(len=1) :: soh = achar(z'01') !! Start of heading
-    character(len=1) :: stx = achar(z'02') !! Start of text
-    character(len=1) :: etx = achar(z'03') !! End of text
-    character(len=1) :: eot = achar(z'04') !! End of transmission
-    character(len=1) :: enq = achar(z'05') !! Enquiry
-    character(len=1) :: ack = achar(z'06') !! Acknowledge
-    character(len=1) :: bel = achar(z'07') !! Bell
-    character(len=1) :: bs  = achar(z'08') !! Backspace
-    character(len=1) :: tab = achar(z'09') !! Horizontal tab
-    character(len=1) :: lf  = achar(z'0A') !! NL line feed, new line
-    character(len=1) :: vt  = achar(z'0B') !! Vertical tab
-    character(len=1) :: ff  = achar(z'0C') !! NP form feed, new page
-    character(len=1) :: cr  = achar(z'0D') !! Carriage return
-    character(len=1) :: so  = achar(z'0E') !! Shift out
-    character(len=1) :: si  = achar(z'0F') !! Shift in
-    character(len=1) :: dle = achar(z'10') !! Data link escape
-    character(len=1) :: dc1 = achar(z'11') !! Device control 1
-    character(len=1) :: dc2 = achar(z'12') !! Device control 2
-    character(len=1) :: dc3 = achar(z'13') !! Device control 3
-    character(len=1) :: dc4 = achar(z'14') !! Device control 4
-    character(len=1) :: nak = achar(z'15') !! Negative acknowledge
-    character(len=1) :: syn = achar(z'16') !! Synchronous idle
-    character(len=1) :: etb = achar(z'17') !! End of transmission block
-    character(len=1) :: can = achar(z'18') !! Cancel
-    character(len=1) :: em  = achar(z'19') !! End of medium
-    character(len=1) :: sub = achar(z'1A') !! Substitute
-    character(len=1) :: esc = achar(z'1B') !! Escape
-    character(len=1) :: fs  = achar(z'1C') !! File separator
-    character(len=1) :: gs  = achar(z'1D') !! Group separator
-    character(len=1) :: rs  = achar(z'1E') !! Record separator
-    character(len=1) :: us  = achar(z'1F') !! Unit separator
-    character(len=1) :: del = achar(z'7F') !! Delete
+    character(len=1) :: nul = achar(int(z'00')) !! Null
+    character(len=1) :: soh = achar(int(z'01')) !! Start of heading
+    character(len=1) :: stx = achar(int(z'02')) !! Start of text
+    character(len=1) :: etx = achar(int(z'03')) !! End of text
+    character(len=1) :: eot = achar(int(z'04')) !! End of transmission
+    character(len=1) :: enq = achar(int(z'05')) !! Enquiry
+    character(len=1) :: ack = achar(int(z'06')) !! Acknowledge
+    character(len=1) :: bel = achar(int(z'07')) !! Bell
+    character(len=1) :: bs  = achar(int(z'08')) !! Backspace
+    character(len=1) :: tab = achar(int(z'09')) !! Horizontal tab
+    character(len=1) :: lf  = achar(int(z'0A')) !! NL line feed, new line
+    character(len=1) :: vt  = achar(int(z'0B')) !! Vertical tab
+    character(len=1) :: ff  = achar(int(z'0C')) !! NP form feed, new page
+    character(len=1) :: cr  = achar(int(z'0D')) !! Carriage return
+    character(len=1) :: so  = achar(int(z'0E')) !! Shift out
+    character(len=1) :: si  = achar(int(z'0F')) !! Shift in
+    character(len=1) :: dle = achar(int(z'10')) !! Data link escape
+    character(len=1) :: dc1 = achar(int(z'11')) !! Device control 1
+    character(len=1) :: dc2 = achar(int(z'12')) !! Device control 2
+    character(len=1) :: dc3 = achar(int(z'13')) !! Device control 3
+    character(len=1) :: dc4 = achar(int(z'14')) !! Device control 4
+    character(len=1) :: nak = achar(int(z'15')) !! Negative acknowledge
+    character(len=1) :: syn = achar(int(z'16')) !! Synchronous idle
+    character(len=1) :: etb = achar(int(z'17')) !! End of transmission block
+    character(len=1) :: can = achar(int(z'18')) !! Cancel
+    character(len=1) :: em  = achar(int(z'19')) !! End of medium
+    character(len=1) :: sub = achar(int(z'1A')) !! Substitute
+    character(len=1) :: esc = achar(int(z'1B')) !! Escape
+    character(len=1) :: fs  = achar(int(z'1C')) !! File separator
+    character(len=1) :: gs  = achar(int(z'1D')) !! Group separator
+    character(len=1) :: rs  = achar(int(z'1E')) !! Record separator
+    character(len=1) :: us  = achar(int(z'1F')) !! Unit separator
+    character(len=1) :: del = achar(int(z'7F')) !! Delete
   end type
 
   ! A single instance of the ascii control characters (initialized to default values)
@@ -210,14 +210,14 @@ module fortran_ascii
     !  ASCII character, otherwise `c` itself.
     pure module function to_lower(c) result(t)
       character(len=1), intent(in) :: c !! A character.
-      character(len=1) :: t 
+      character(len=1) :: t
     end function to_lower
 
     !> Returns the corresponding uppercase letter, if `c` is a lowercase
     !  ASCII character, otherwise `c` itself.
     pure module function to_upper(c) result(t)
       character(len=1), intent(in) :: c !! A character.
-      character(len=1) :: t 
+      character(len=1) :: t
     end function to_upper
 
   end interface
