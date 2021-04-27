@@ -7,6 +7,7 @@ module is_alpha_mod
   implicit none
 
   public :: is_alpha_int
+  public :: is_alpha_raw
   public :: is_alpha_lexical
   public :: is_alpha_compare
   public :: is_alpha_index
@@ -20,16 +21,22 @@ contains
   pure function is_alpha_int(c) result(res)
     character(len=1), intent(in) :: c
     logical :: res
-    associate(ic => iachar(c))
-      res = (ic >= 65 .and. ic <= 90) .or. &
-            (ic >= 97 .and. ic <=122)
-    end associate
+    integer :: ic
+    ic = iachar(c)
+    res = (ic >= 65 .and. ic <= 90) .or. &
+          (ic >= 97 .and. ic <= 122)
+  end function
+
+  pure function is_alpha_raw(c) result(res)
+    character(len=1), intent(in) :: c
+    logical :: res
+    res = ("A" <= c .and. c <= "Z") .or. ("a" <= c .and. c <= "z")
   end function
 
   pure function is_alpha_lexical(c) result(res)
     character(len=1), intent(in) :: c
     logical :: res
-    res = ("A" <= c .and. c <= "Z") .or. ("a" <= c .and. c <= "z")
+    res = (lle('A',c) .and. lle(c,'Z')) .or. (lle('a',c) .and. lle(c,'z'))
   end function
 
   pure function is_alpha_compare(c) result(res)
