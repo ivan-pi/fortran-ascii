@@ -1,5 +1,5 @@
 FC = gfortran
-FFLAGS = -Wall -O3
+FFLAGS = -Wall -O2 -march=native -fopenmp-simd
 # FFLAGS=-Wall -Wextra -pedantic -Wimplicit-interface -fPIC -g -fcheck=all
 FLFLAGS =
 
@@ -8,21 +8,25 @@ FLFLAGS =
 # FFLAGS = -warn all -O3
 
 CC = gcc
-CFLAGS= -Wall -O3
+CFLAGS= -Wall -O2 -march=native
 
 CPP = g++
-CPPFLAGS = -Wall -O3
+CPPFLAGS = -Wall -O2 -march=native
 
 SM=pure
 
 EXECS = test_ascii \
 		benchmark_f90 \
 		benchmark_cpp \
+ 		benchmark_case \
+ 		benchmark_scan \
 		generate_characters \
 		generate_ascii_table \
 		generate_ascii_byte_table \
 		print_table
 
+stream: stream.c
+	$(CC) $(CFLAGS) -o $@ $<
 
 test_ascii: test_ascii.o fortran_ascii.o fortran_ascii_$(SM).o
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
@@ -41,6 +45,12 @@ benchmark_f90: benchmark_f90.o fortran_ascii.o fortran_ascii_$(SM).o
 
 benchmark_cpp: benchmark_cpp.o
 	$(CPP) $(CPPFLAGS) -o $@ $^
+
+benchmark_case: benchmark_case.o ascii_simd.o
+	$(FC) $(FFLAGS) -o $@ $^
+	
+benchmark_scan: benchmark_scan.o ascii_simd.o
+	$(FC) $(FFLAGS) -o $@ $^
 
 generate_characters: generate_characters.o
 	$(FC) $(FFLAGS) -o $@ $(FLFLAGS) $^
@@ -66,6 +76,8 @@ test_ascii.o: fortran_ascii.o
 generate_ascii_table.o: fortran_ascii.o
 generate_ascii_byte_table.o: fortran_ascii.o
 benchmark_f90.o: fortran_ascii.o
+benchmark_case.o: ascii_simd.o
+benchmark_scan.o: ascii_simd.o
 print_table.o: fortran_ascii.o
 
 #-------------------------------------------------------------
@@ -81,7 +93,8 @@ print_table.o: fortran_ascii.o
 	$(FC) $(FFLAGS) -c $<
 %.o: %.f90
 	$(FC) $(FFLAGS) -c $<
-
+%.o: %.F90
+	$(FC) $(FFLAGS) -c $<
 
 #----------------------------------------------
 # This section shows how to clean up afterward.

@@ -56,6 +56,7 @@ subroutine generate_random_characters(filename,nchar)
 
     do i = 1, nchar
         r = rand_int(33,126)
+        if (r == 59) r = 58    ! No semicolons!
         write(unit,'(a1)') achar(r)
     end do
 
@@ -84,6 +85,7 @@ subroutine generate_random_characters_stream(filename,nchar)
 
     allocate(r(nchar))
     call rand_int_array(r,33,126)
+    where(r == 59) r = 58 ! no semicolons
 
     allocate(character(nchar) :: stream)
     do i = 1, nchar
@@ -103,7 +105,7 @@ program generate_chars
     integer :: exp, sz
     character(len=30) :: filename
 
-    do exp = 3, 8
+    do exp = 3, 9
         sz = 10**exp
         write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
         print *, filename
