@@ -75,20 +75,50 @@ program benchmark_scan
 
   write(*,'(4A16)') "size", "chars/s", "MB/s", "#reps"
 
-  do exp = 3, 7
+  write(*,*) "# --- scan ---"
+  do exp = 3, 8
       sz = 10**exp
       write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
       ! print *, filename
-      call measure(find,trim(filename), sz)
+      call measure(find1,trim(filename), sz)
+  end do
+
+  write(*,*) "# --- findloc ---"
+  do exp = 3, 8
+      sz = 10**exp
+      write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+      ! print *, filename
+      call measure(find2,trim(filename), sz)
+  end do
+
+
+  write(*,*) "# --- OpenMP SIMD ---"
+  do exp = 3, 8
+      sz = 10**exp
+      write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+      ! print *, filename
+      call measure(find3,trim(filename), sz)
   end do
 
 contains
   
-  subroutine find(str,i)
+  subroutine find1(str,i)
     character(len=*), intent(in) :: str
     integer, intent(out) :: i
-!    i = find_scan(str)
-!    i = find_findloc(str)
+    i = find_scan(str)
+  end subroutine
+
+  
+  subroutine find2(str,i)
+    character(len=*), intent(in) :: str
+    integer, intent(out) :: i
+    i = find_findloc(str)
+  end subroutine
+
+  
+  subroutine find3(str,i)
+    character(len=*), intent(in) :: str
+    integer, intent(out) :: i
     i = findsc(str)
   end subroutine
 
