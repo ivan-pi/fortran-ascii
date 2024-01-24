@@ -28,7 +28,7 @@ contains
 
         call system_clock(count_rate=cr)
 
-        nsz = sz - mod(sz,16)
+        nsz = sz - mod(sz,32)
         allocate(character(len=nsz) :: chars)
 
         open(newunit=unit,file=filename)
@@ -42,8 +42,8 @@ contains
         call system_clock(count=c1)
         do reps = 1, nreps
             call f(chars,ires)
+            if (ires /= nsz) error stop "SEARCH FAILED!"
         end do
-!        if (ires /= nsz) error stop "Something is wrong"
         call system_clock(count=c2)
         time = (real(c2 - c1,dp)/real(cr,dp))
         if (time > 0.2_dp) exit
@@ -65,7 +65,9 @@ contains
 end module
 
 program benchmark_scan
-  use ascii_simd, only: findsc, find_scan, find_findloc
+  use ascii_simd, only: find_v1, find_v2, find_v3, &
+    find_scan, find_findloc, find_index
+  
   use time_ascii, only: measure
   implicit none
 
@@ -73,9 +75,9 @@ program benchmark_scan
   character(len=30) :: filename
 
 
-  write(*,'(4A16)') "size", "chars/s", "MB/s", "#reps"
+  write(*,'(A1,4A16)')"#", "size", "chars/s", "MB/s", "#reps"
 
-  write(*,*) "# --- scan ---"
+  write(*,'(A)') "# --- scan ---"
   do exp = 3, 8
       sz = 10**exp
       write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
@@ -83,7 +85,7 @@ program benchmark_scan
       call measure(find1,trim(filename), sz)
   end do
 
-  write(*,*) "# --- findloc ---"
+  write(*,'(//,A)') "# --- index ---"
   do exp = 3, 8
       sz = 10**exp
       write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
@@ -92,12 +94,37 @@ program benchmark_scan
   end do
 
 
-  write(*,*) "# --- OpenMP SIMD ---"
+  write(*,'(//,A)') "# --- findloc ---"
   do exp = 3, 8
       sz = 10**exp
       write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
       ! print *, filename
       call measure(find3,trim(filename), sz)
+  end do
+
+  write(*,'(//,A)') "# --- custom 1 ---"
+  do exp = 3, 8
+      sz = 10**exp
+      write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+      ! print *, filename
+      call measure(find4,trim(filename), sz)
+  end do
+
+
+  write(*,'(//,A)') "# --- custom 2 ---"
+  do exp = 3, 8
+      sz = 10**exp
+      write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+      ! print *, filename
+      call measure(find5,trim(filename), sz)
+  end do
+
+  write(*,'(//,A)') "# --- custom 3 ---"
+  do exp = 3, 8
+      sz = 10**exp
+      write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+      ! print *, filename
+      call measure(find6,trim(filename), sz)
   end do
 
 contains
@@ -108,18 +135,34 @@ contains
     i = find_scan(str)
   end subroutine
 
-  
   subroutine find2(str,i)
     character(len=*), intent(in) :: str
     integer, intent(out) :: i
-    i = find_findloc(str)
+    i = find_index(str)
   end subroutine
-
   
   subroutine find3(str,i)
     character(len=*), intent(in) :: str
     integer, intent(out) :: i
-    i = findsc(str)
+    i = find_findloc(str)
+  end subroutine
+  
+  subroutine find4(str,i)
+    character(len=*), intent(in) :: str
+    integer, intent(out) :: i
+    i = find_v1(str)
+  end subroutine
+
+  subroutine find5(str,i)
+    character(len=*), intent(in) :: str
+    integer, intent(out) :: i
+    i = find_v2(str)
+  end subroutine
+
+  subroutine find6(str,i)
+    character(len=*), intent(in) :: str
+    integer, intent(out) :: i
+    i = find_v3(str)
   end subroutine
 
 end program
