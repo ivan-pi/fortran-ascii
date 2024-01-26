@@ -85,30 +85,30 @@ program benchmark_scan
       call measure(find1,trim(filename), sz)
   end do
 
-  write(*,'(//,A)') "# --- index ---"
-  do exp = 3, 8
-      sz = 10**exp
-      write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
-      ! print *, filename
-      call measure(find2,trim(filename), sz)
-  end do
+  ! write(*,'(//,A)') "# --- index ---"
+  ! do exp = 3, 8
+  !     sz = 10**exp
+  !     write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+  !     ! print *, filename
+  !     call measure(find2,trim(filename), sz)
+  ! end do
 
 
-  write(*,'(//,A)') "# --- findloc ---"
-  do exp = 3, 8
-      sz = 10**exp
-      write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
-      ! print *, filename
-      call measure(find3,trim(filename), sz)
-  end do
+  ! write(*,'(//,A)') "# --- findloc ---"
+  ! do exp = 3, 8
+  !     sz = 10**exp
+  !     write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+  !     ! print *, filename
+  !     call measure(find3,trim(filename), sz)
+  ! end do
 
-  write(*,'(//,A)') "# --- custom 1 ---"
-  do exp = 3, 8
-      sz = 10**exp
-      write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
-      ! print *, filename
-      call measure(find4,trim(filename), sz)
-  end do
+  ! write(*,'(//,A)') "# --- custom 1 ---"
+  ! do exp = 3, 8
+  !     sz = 10**exp
+  !     write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+  !     ! print *, filename
+  !     call measure(find4,trim(filename), sz)
+  ! end do
 
 
   write(*,'(//,A)') "# --- custom 2 ---"
@@ -119,12 +119,20 @@ program benchmark_scan
       call measure(find5,trim(filename), sz)
   end do
 
-  write(*,'(//,A)') "# --- custom 3 ---"
+  ! write(*,'(//,A)') "# --- custom 3 ---"
+  ! do exp = 3, 8
+  !     sz = 10**exp
+  !     write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
+  !     ! print *, filename
+  !     call measure(find6,trim(filename), sz)
+  ! end do
+
+  write(*,'(//,A)') "# --- custom 4 ---"
   do exp = 3, 8
       sz = 10**exp
       write(filename,'(A,I0,A)') 'chars-',sz,'.txt'
       ! print *, filename
-      call measure(find6,trim(filename), sz)
+      call measure(find7,trim(filename), sz)
   end do
 
 contains
@@ -163,6 +171,18 @@ contains
     character(len=*), intent(in) :: str
     integer, intent(out) :: i
     i = find_v3(str)
+  end subroutine
+
+  subroutine find7(str,i)
+    character(len=*), intent(in) :: str
+    integer, intent(out) :: i
+
+    interface
+      integer function scan(str)
+        character(len=*), intent(in) :: str
+      end function
+    end interface
+    i = scan(str)
   end subroutine
 
 end program

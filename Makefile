@@ -49,7 +49,7 @@ benchmark_cpp: benchmark_cpp.o
 benchmark_case: benchmark_case.o ascii_simd.o
 	$(FC) $(FFLAGS) -o $@ $^
 	
-benchmark_scan: benchmark_scan.o ascii_simd.o
+benchmark_scan: benchmark_scan.o ascii_simd.o scan.o
 	$(FC) $(FFLAGS) -o $@ $^
 
 generate_characters: generate_characters.o
@@ -86,7 +86,7 @@ print_table.o: fortran_ascii.o
 #-------------------------------------------------------------
 
 %.o: %.c
-	$(CC) $(CCFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 %.o: %.cpp
 	$(CPP) $(CPPFLAGS) -c $<
 %.o: %.f
